@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.StringTokenizer;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -34,6 +35,8 @@ public class ExecutorDAO {
 	public static final String DATASOURCE = "jdbc/hsqldbtest-db";
 	public static final String TOMCAT_JNDI_PREFIX = "java:/comp/env/";
 
+	private static final String SELECT_PREFIX = "SELECT";
+
 	private static Logger logger;
 
 	private static DataSource datasource;
@@ -53,6 +56,11 @@ public class ExecutorDAO {
 		Connection connection = null;
 		connection = datasource.getConnection();
 		return connection;
+	}
+
+	public boolean isSelect(final String sql) {
+		StringTokenizer tokenizer = new StringTokenizer(sql, " ");
+		return SELECT_PREFIX.equalsIgnoreCase(tokenizer.nextToken().trim());
 	}
 
 	public String executeUpdate(final String sql) {

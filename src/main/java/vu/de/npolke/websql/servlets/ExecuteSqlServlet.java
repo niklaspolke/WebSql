@@ -1,7 +1,6 @@
 package vu.de.npolke.websql.servlets;
 
 import java.io.IOException;
-import java.util.StringTokenizer;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -33,8 +32,6 @@ public class ExecuteSqlServlet extends AbstractBasicServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final String SELECT_PREFIX = "SELECT";
-
 	private ExecutorDAO executorDAO = new ExecutorDAO();
 
 	@Override
@@ -48,8 +45,7 @@ public class ExecuteSqlServlet extends AbstractBasicServlet {
 		String sql = request.getParameter("sql");
 
 		String result;
-		StringTokenizer tokenizer = new StringTokenizer(sql, " ");
-		if (SELECT_PREFIX.equalsIgnoreCase(tokenizer.nextToken().trim())) {
+		if (executorDAO.isSelect(sql)) {
 			result = executorDAO.executeQuery(sql);
 		} else {
 			result = executorDAO.executeUpdate(sql);
