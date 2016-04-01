@@ -39,23 +39,24 @@ public class ExecutorDAO {
 
 	private static Logger logger;
 
-	private static DataSource datasource;
+	private DataSource datasource;
 
-	static {
-		logger = LoggerFactory.getLogger(ExecutorDAO.class);
-		final String JNDI2DB = TOMCAT_JNDI_PREFIX + DATASOURCE;
+	public String connect(final String database) {
+		datasource = null;
+		String errorMessage = null;
+		final String JNDI2DB = TOMCAT_JNDI_PREFIX + database;
 		try {
 			InitialContext context = new InitialContext();
 			datasource = (DataSource) context.lookup(JNDI2DB);
 		} catch (NamingException e) {
 			logger.error("ERROR --- failed to lookup {} : {}", JNDI2DB, e.getMessage());
+			errorMessage = e.getMessage();
 		}
+		return errorMessage;
 	}
 
-	public static Connection getConnection() throws SQLException {
-		Connection connection = null;
-		connection = datasource.getConnection();
-		return connection;
+	static {
+		logger = LoggerFactory.getLogger(ExecutorDAO.class);
 	}
 
 	public boolean isSelect(final String sql) {
@@ -63,35 +64,45 @@ public class ExecutorDAO {
 		return SELECT_PREFIX.equalsIgnoreCase(tokenizer.nextToken().trim());
 	}
 
-	public String executeUpdate(final String sql) {
-		String result = "\"" + sql + "\": ";
-		try (Connection connection = getConnection()) {
-			PreparedStatement statement;
-			statement = connection.prepareStatement(sql);
-			result += statement.executeUpdate();
-			connection.commit();
-		} catch (SQLException e) {
-			logger.debug("ERROR --- failed to execute \"{}\": {}", sql, e.getMessage());
-			result += e.getMessage();
+	public String executeUpdate(final String database, final String sql) {
+		String result = "\"" + database + "\" - \"" + sql + "\": ";
+		String errorMessageFromConnect = connect(database);
+		if (errorMessageFromConnect != null) {
+			result += errorMessageFromConnect;
+		} else {
+			try (Connection connection = datasource.getConnection()) {
+				PreparedStatement statement;
+				statement = connection.prepareStatement(sql);
+				result += statement.executeUpdate();
+				connection.commit();
+			} catch (SQLException e) {
+				logger.debug("ERROR --- failed to execute \"{}\": {}", sql, e.getMessage());
+				result += e.getMessage();
+			}
 		}
 		return result;
 	}
 
-	public String executeQuery(final String sql) {
-		String result = "\"" + sql + "\": ";
-		try (Connection connection = getConnection()) {
-			PreparedStatement statement;
-			statement = connection.prepareStatement(sql);
-			ResultSet resultSet = statement.executeQuery();
-			int counter = 0;
-			while (resultSet.next()) {
-				counter++;
+	public String executeQuery(final String database, final String sql) {
+		String result = "\"" + database + "\" - \"" + sql + "\": ";
+		String errorMessageFromConnect = connect(database);
+		if (errorMessageFromConnect != null) {
+			result += errorMessageFromConnect;
+		} else {
+			try (Connection connection = datasource.getConnection()) {
+				PreparedStatement statement;
+				statement = connection.prepareStatement(sql);
+				ResultSet resultSet = statement.executeQuery();
+				int counter = 0;
+				while (resultSet.next()) {
+					counter++;
+				}
+				result += counter;
+				connection.rollback();
+			} catch (SQLException e) {
+				logger.debug("ERROR --- failed to execute \"{}\": {}", sql, e.getMessage());
+				result += e.getMessage();
 			}
-			result += counter;
-			connection.rollback();
-		} catch (SQLException e) {
-			logger.debug("ERROR --- failed to execute \"{}\": {}", sql, e.getMessage());
-			result += e.getMessage();
 		}
 		return result;
 	}

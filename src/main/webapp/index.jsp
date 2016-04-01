@@ -41,14 +41,13 @@ the License.
                     <td>
                         <input
                             type="text"
-                            name="sql"
+                            name="database"
                             size="40"
                             maxlength="40"
-                            title="sql to execute"
-                            placeholder="select * from table"
+                            title="database to send sql statement to"
+                            placeholder="jdbc/hsqldbtest-db"
                             required="required"
-                            value="TEST-DB"
-                            disabled>
+                            value="jdbc/hsqldbtest-db">
                     </td>
                 </tr>
                 <tr>

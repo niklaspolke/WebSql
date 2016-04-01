@@ -43,12 +43,13 @@ public class ExecuteSqlServlet extends AbstractBasicServlet {
 	public void doPost(final HttpServletRequest request, final HttpServletResponse response, final HttpSession session) throws ServletException, IOException {
 
 		String sql = request.getParameter("sql");
+		String database = request.getParameter("database");
 
 		String result;
 		if (executorDAO.isSelect(sql)) {
-			result = executorDAO.executeQuery(sql);
+			result = executorDAO.executeQuery(database, sql);
 		} else {
-			result = executorDAO.executeUpdate(sql);
+			result = executorDAO.executeUpdate(database, sql);
 		}
 
 		session.setAttribute("result", result);
