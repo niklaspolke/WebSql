@@ -52,6 +52,8 @@ public class ExecuteSqlServlet extends AbstractBasicServlet {
 			result = executorDAO.executeUpdate(database, sql);
 		}
 
+		session.setAttribute("sql", sql);
+		session.setAttribute("database", database);
 		session.setAttribute("result", result);
 		response.sendRedirect("index.jsp");
 	}

@@ -47,7 +47,7 @@ the License.
                             title="database to send sql statement to"
                             placeholder="jdbc/hsqldbtest-db"
                             required="required"
-                            value="jdbc/hsqldbtest-db">
+                            value="${sessionScope.database}">
                     </td>
                 </tr>
                 <tr>
@@ -63,6 +63,7 @@ the License.
                             title="sql to execute"
                             placeholder="select * from table"
                             required="required"
+                            value="${sessionScope.sql}"
                             autofocus>
                     </td>
                 </tr>
