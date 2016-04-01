@@ -65,7 +65,7 @@ public class ExecutorDAO {
 	}
 
 	public String executeUpdate(final String database, final String sql) {
-		String result = "\"" + database + "\" - \"" + sql + "\": ";
+		String result = "";
 		String errorMessageFromConnect = connect(database);
 		if (errorMessageFromConnect != null) {
 			result += errorMessageFromConnect;
@@ -84,7 +84,7 @@ public class ExecutorDAO {
 	}
 
 	public String executeQuery(final String database, final String sql) {
-		String result = "\"" + database + "\" - \"" + sql + "\": ";
+		String result = "";
 		String errorMessageFromConnect = connect(database);
 		if (errorMessageFromConnect != null) {
 			result += errorMessageFromConnect;

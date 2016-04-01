@@ -75,15 +75,67 @@ the License.
                         <input type="submit" value="Execute SQL">
                     </td>
                 </tr>
+            </tbody>
+        </table>
+    </fieldset>
+</form>
+
+<c:if test="${not empty sessionScope.result}">
+<form action="noaction" method="post">
+    <fieldset>
+        <legend>Result</legend>
+        <table>
+            <tbody>
                 <tr>
-                    <td colspan="2">
-                        ${sessionScope.result}
+                    <th class="label">
+                        <label for="resultdatabase">DATABASE</label>
+                    </th>
+                    <td>
+                        <input
+                            type="text"
+                            name="resultdatabase"
+                            size="40"
+                            maxlength="40"
+                            title="database in which sql was executed"
+                            value="${sessionScope.database}"
+                            disabled>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="label">
+                        <label for="resultsql">SQL</label>
+                    </th>
+                    <td>
+                        <input
+                            type="text"
+                            name="resultsql"
+                            size="100"
+                            maxlength="100"
+                            title="executed sql"
+                            value="${sessionScope.sql}"
+                            disabled>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="label">
+                        <label for="result">RESULT</label>
+                    </th>
+                    <td>
+                        <input
+                            type="text"
+                            name="result"
+                            size="100"
+                            maxlength="100"
+                            title="result of sql execution"
+                            value="<c:out value="${sessionScope.result}"/>"
+                            disabled>
                     </td>
                 </tr>
             </tbody>
         </table>
     </fieldset>
 </form>
+</c:if>
 
 </body>
 </html>
