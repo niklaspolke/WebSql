@@ -59,6 +59,6 @@ public class ExecuteSqlServlet extends AbstractBasicServlet {
 		session.setAttribute("database", database);
 		session.setAttribute("message", message);
 		session.setAttribute("queryResult", queryResult);
-		response.sendRedirect("index.jsp");
+		response.sendRedirect("sql.jsp");
 	}
 }

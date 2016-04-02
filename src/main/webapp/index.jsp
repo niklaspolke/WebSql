@@ -29,41 +29,25 @@ the License.
 
 <h1>WebSql</h1>
 
-<form action="executesql" method="post">
+<form action="login" method="post">
     <fieldset>
-        <legend>SQL to execute</legend>
+        <legend>Login</legend>
         <table>
             <tbody>
                 <tr>
                     <th class="label">
-                        <label for="database">DATABASE</label>
+                        <label for="password">Password:</label>
                     </th>
                     <td>
                         <input
-                            type="text"
-                            name="database"
+                            type="password"
+                            name="password"
                             size="40"
-                            maxlength="40"
-                            title="database to send sql statement to"
-                            placeholder="jdbc/hsqldbtest-db"
+                            maxlength="30"
+                            title="login password"
+                            placeholder="<password>"
                             required="required"
-                            value="${sessionScope.database}">
-                    </td>
-                </tr>
-                <tr>
-                    <th class="label">
-                        <label for="sql">SQL</label>
-                    </th>
-                    <td>
-                        <input
-                            type="text"
-                            name="sql"
-                            size="100"
-                            maxlength="100"
-                            title="sql to execute"
-                            placeholder="select * from table"
-                            required="required"
-                            value="${sessionScope.sql}"
+                            value=""
                             autofocus>
                     </td>
                 </tr>
@@ -72,86 +56,13 @@ the License.
                         <input type="reset" value="Reset">
                     </td>
                     <td>
-                        <input type="submit" value="Execute SQL">
+                        <input type="submit" value="Login">
                     </td>
                 </tr>
             </tbody>
         </table>
     </fieldset>
 </form>
-
-<c:if test="${not empty sessionScope.message || not empty sessionScope.queryResult}">
-<form action="noaction" method="post">
-    <fieldset>
-        <legend>Result</legend>
-        <table>
-            <tbody>
-                <tr>
-                    <th class="label">
-                        <label for="resultdatabase">DATABASE</label>
-                    </th>
-                    <td>
-                        <input
-                            type="text"
-                            name="resultdatabase"
-                            size="40"
-                            maxlength="40"
-                            title="database in which sql was executed"
-                            value="${sessionScope.database}"
-                            disabled>
-                    </td>
-                </tr>
-                <tr>
-                    <th class="label">
-                        <label for="resultsql">SQL</label>
-                    </th>
-                    <td>
-                        <input
-                            type="text"
-                            name="resultsql"
-                            size="100"
-                            maxlength="100"
-                            title="executed sql"
-                            value="${sessionScope.sql}"
-                            disabled>
-                    </td>
-                </tr>
-                <tr>
-                    <th class="label">
-                        <label for="message">MESSAGE</label>
-                    </th>
-                    <td>
-                        <input
-                            type="text"
-                            name="message"
-                            size="100"
-                            maxlength="100"
-                            title="message of sql execution"
-                            value="<c:out value="${sessionScope.message}"/>"
-                            disabled>
-                    </td>
-                </tr>
-                <c:if test="${not empty sessionScope.queryResult}"><tr>
-                    <td colspan="2">
-                        <table>
-                            <tr>
-                                <c:forEach var="resultHeader" items="${sessionScope.queryResult.headers}"><th>
-                                    <c:out value="${resultHeader}"/>
-                                </th></c:forEach>
-                            </tr>
-                            <c:forEach var="resultRow" items="${sessionScope.queryResult.rows}"><tr>
-                                <c:forEach var="columnContent" items="${resultRow}"><td>
-                                    <c:out value="${columnContent}"/>
-                                </td></c:forEach>
-                            </tr></c:forEach>
-                        </table>
-                    </td>
-                </tr></c:if>
-            </tbody>
-        </table>
-    </fieldset>
-</form>
-</c:if>
 
 </body>
 </html>
