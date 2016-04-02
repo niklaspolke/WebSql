@@ -80,7 +80,7 @@ the License.
     </fieldset>
 </form>
 
-<c:if test="${not empty sessionScope.result}">
+<c:if test="${not empty sessionScope.message || not empty sessionScope.queryResult}">
 <form action="noaction" method="post">
     <fieldset>
         <legend>Result</legend>
@@ -118,19 +118,35 @@ the License.
                 </tr>
                 <tr>
                     <th class="label">
-                        <label for="result">RESULT</label>
+                        <label for="message">MESSAGE</label>
                     </th>
                     <td>
                         <input
                             type="text"
-                            name="result"
+                            name="message"
                             size="100"
                             maxlength="100"
-                            title="result of sql execution"
-                            value="<c:out value="${sessionScope.result}"/>"
+                            title="message of sql execution"
+                            value="<c:out value="${sessionScope.message}"/>"
                             disabled>
                     </td>
                 </tr>
+                <c:if test="${not empty sessionScope.queryResult}"><tr>
+                    <td colspan="2">
+                        <table>
+                            <tr>
+                                <c:forEach var="resultHeader" items="${sessionScope.queryResult.headers}"><th>
+                                    <c:out value="${resultHeader}"/>
+                                </th></c:forEach>
+                            </tr>
+                            <c:forEach var="resultRow" items="${sessionScope.queryResult.rows}"><tr>
+                                <c:forEach var="columnContent" items="${resultRow}"><td>
+                                    <c:out value="${columnContent}"/>
+                                </td></c:forEach>
+                            </tr></c:forEach>
+                        </table>
+                    </td>
+                </tr></c:if>
             </tbody>
         </table>
     </fieldset>

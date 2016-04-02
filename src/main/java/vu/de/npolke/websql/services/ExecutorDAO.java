@@ -3,7 +3,10 @@ package vu.de.npolke.websql.services;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.naming.InitialContext;
@@ -12,6 +15,8 @@ import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import vu.de.npolke.websql.model.QueryResult;
 
 /**
  * Copyright 2015 Niklas Polke
@@ -83,27 +88,34 @@ public class ExecutorDAO {
 		return result;
 	}
 
-	public String executeQuery(final String database, final String sql) {
-		String result = "";
+	public QueryResult executeQuery(final String database, final String sql) {
+		QueryResult qResult = new QueryResult();
 		String errorMessageFromConnect = connect(database);
 		if (errorMessageFromConnect != null) {
-			result += errorMessageFromConnect;
+			qResult.errorMessage = errorMessageFromConnect;
 		} else {
 			try (Connection connection = datasource.getConnection()) {
 				PreparedStatement statement;
 				statement = connection.prepareStatement(sql);
 				ResultSet resultSet = statement.executeQuery();
-				int counter = 0;
-				while (resultSet.next()) {
-					counter++;
+				ResultSetMetaData metaData = resultSet.getMetaData();
+				qResult.headers = new ArrayList<String>();
+				for (int columnIndex=1; columnIndex<=metaData.getColumnCount(); columnIndex++) {
+					qResult.headers.add(metaData.getColumnLabel(columnIndex));
 				}
-				result += counter;
+				while (resultSet.next()) {
+					List<String> singleResult = new ArrayList<String>();
+					for (int columnIndex=1; columnIndex<=metaData.getColumnCount(); columnIndex++) {
+						singleResult.add(resultSet.getString(columnIndex));
+					}
+					qResult.rows.add(singleResult);
+				}
 				connection.rollback();
 			} catch (SQLException e) {
 				logger.debug("ERROR --- failed to execute \"{}\": {}", sql, e.getMessage());
-				result += e.getMessage();
+				qResult.errorMessage = e.getMessage();
 			}
 		}
-		return result;
+		return qResult;
 	}
 }

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import vu.de.npolke.websql.model.QueryResult;
 import vu.de.npolke.websql.services.ExecutorDAO;
 
 /**
@@ -45,16 +46,19 @@ public class ExecuteSqlServlet extends AbstractBasicServlet {
 		String sql = request.getParameter("sql");
 		String database = request.getParameter("database");
 
-		String result;
+		String message;
+		QueryResult queryResult = null;
 		if (executorDAO.isSelect(sql)) {
-			result = executorDAO.executeQuery(database, sql);
+			queryResult = executorDAO.executeQuery(database, sql);
+			message = queryResult.errorMessage;
 		} else {
-			result = executorDAO.executeUpdate(database, sql);
+			message = executorDAO.executeUpdate(database, sql);
 		}
 
 		session.setAttribute("sql", sql);
 		session.setAttribute("database", database);
-		session.setAttribute("result", result);
+		session.setAttribute("message", message);
+		session.setAttribute("queryResult", queryResult);
 		response.sendRedirect("index.jsp");
 	}
 }
