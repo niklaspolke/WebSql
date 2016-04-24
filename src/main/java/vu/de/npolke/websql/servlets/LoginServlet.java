@@ -49,7 +49,7 @@ public class LoginServlet extends AbstractBasicServlet {
 
 		if (properties.getProperty(KEY_PASSWORD).equals(HashUtil.toMD5(password))) {
 			session.setAttribute("login", true);
-			response.sendRedirect("sql.jsp");
+			response.sendRedirect("executesql");
 		} else {
 			response.sendRedirect("index.jsp");
 		}

@@ -39,15 +39,9 @@ the License.
                         <label for="database">DATABASE</label>
                     </th>
                     <td>
-                        <input
-                            type="text"
-                            name="database"
-                            size="40"
-                            maxlength="40"
-                            title="database to send sql statement to"
-                            placeholder="jdbc/hsqldbtest-db"
-                            required="required"
-                            value="${sessionScope.database}">
+                        <select name="database">
+                            <c:forEach var="database" items="${sessionScope.databases}"><option value="${database}" ${sessionScope.database eq database ? 'selected' : ''}>${database}</option></c:forEach>
+                        </select>
                     </td>
                 </tr>
                 <tr>

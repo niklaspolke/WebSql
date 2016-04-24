@@ -1,7 +1,13 @@
 package vu.de.npolke.websql.servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.naming.InitialContext;
+import javax.naming.NameClassPair;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -38,10 +44,26 @@ public class ExecuteSqlServlet extends AbstractBasicServlet {
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response,
 			final HttpSession session) throws ServletException, IOException {
+		List<String> databases = new ArrayList<String>();
+		InitialContext ctx;
+		try {
+			ctx = new InitialContext();
+			NamingEnumeration<NameClassPair> list = ctx.list("java:comp/env/jdbc");
+			while (list.hasMore()) {
+				NameClassPair pair = list.next();
+				databases.add(pair.getName());
+			}
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
+
+		session.setAttribute("databases", databases);
+		response.sendRedirect("sql.jsp");
 	}
 
 	@Override
-	public void doPost(final HttpServletRequest request, final HttpServletResponse response, final HttpSession session) throws ServletException, IOException {
+	public void doPost(final HttpServletRequest request, final HttpServletResponse response, final HttpSession session)
+			throws ServletException, IOException {
 
 		String sql = request.getParameter("sql");
 		String database = request.getParameter("database");
@@ -49,10 +71,10 @@ public class ExecuteSqlServlet extends AbstractBasicServlet {
 		String message;
 		QueryResult queryResult = null;
 		if (executorDAO.isSelect(sql)) {
-			queryResult = executorDAO.executeQuery(database, sql);
+			queryResult = executorDAO.executeQuery("jdbc/" + database, sql);
 			message = queryResult.errorMessage;
 		} else {
-			message = executorDAO.executeUpdate(database, sql);
+			message = executorDAO.executeUpdate("jdbc/" + database, sql);
 		}
 
 		session.setAttribute("sql", sql);
