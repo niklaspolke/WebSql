@@ -1,8 +1,9 @@
-# MyExpenses
+# WebSql
 Web Application to check or modify the contents of sql databases
 
 ### Features:
-* ...
+* display configured jdbc resources on tomcat
+* execute sql commands
 
 ### Architecture:
 * Java EE
